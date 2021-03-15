@@ -10,6 +10,18 @@ class dokuwiki::config {
   $manage_webserver = $dokuwiki::manage_webserver
   $enable_ssl = $dokuwiki::enable_ssl
 
+  if $dokuwiki::mimetypes {
+    file {'dokuwiki-local-mimetypes':
+      ensure  => file,
+      path    => "${dokuwiki::install_path}/dokuwiki/conf/mime.local.conf",
+      content => epp('dokuwiki/mime.conf.epp'),
+      mode    => '0644',
+      owner   => $dokuwiki::user,
+      group   => $dokuwiki::group,
+      replace => $dokuwiki::replace_local,
+    }
+  }
+
   file {'dokuwiki-local.php':
     ensure  => file,
     path    => "${dokuwiki::install_path}/dokuwiki/conf/local.php",
