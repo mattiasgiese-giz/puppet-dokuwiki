@@ -1,5 +1,5 @@
 # Local additions to the mimetype info used by dokuwiki
 # This file is managed by Puppet, local modifications will be overwritten
-<% $dokuwiki::mimetypes.each |String $k, String $v| %>
+<% $dokuwiki::mimetypes.each |String $k, String $v| { -%>
 <%= $k %> <%= $v %>
-<% endfor %>
+<% } %>
