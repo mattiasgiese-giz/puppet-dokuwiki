@@ -12,11 +12,19 @@ $conf['superuser'] = '<%= $dokuwiki::superuser %>';
 $conf['disableactions'] = '<%= $dokuwiki::disableactions %>';
 <%- } -%>
 $conf['userewrite'] = <%= $dokuwiki::userewrite %>;
-<%- $dokuwiki::custom_config.each |String $key, Variant[String, Integer] $value| { %>
-  <%- if is_string($value) { $sep = "'" } else { $sep = '' } -%>
-  <%- if '.' in $key { -%>
-$conf<%- split($key, '[.]').each |String $k| { %>['<%= $k -%>']<% } %> = <%= "${sep}${value}${sep}" -%>;
+<%- $dokuwiki::custom_config.each |String $key, Variant[String, Integer, Array] $value| { %>
+  <%- if is_array($value) { -%>
+    <%- if '.' in $key { -%>
+$conf<%- split($key, '[.]').each |String $k| { %>['<%= $k -%>']<% } %> = array( '<%= $value.join("', '") -%>' );
+    <%- } else { -%>
+$conf['<%= $key %>'] = array( '<%= $value.join("', '") -%>' );
+    <%- } -%>
   <%- } else { -%>
+    <%- if is_string($value) { $sep = "'" } else { $sep = '' } -%>
+    <%- if '.' in $key { -%>
+$conf<%- split($key, '[.]').each |String $k| { %>['<%= $k -%>']<% } %> = <%= "${sep}${value}${sep}" -%>;
+    <%- } else { -%>
 $conf['<%= $key %>'] = '<%= $value -%>';
+    <%- } -%>
   <%- } -%>
 <%- } -%>
